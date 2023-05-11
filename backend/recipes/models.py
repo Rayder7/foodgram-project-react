@@ -69,7 +69,7 @@ class TagToRecipe(models.Model):
         return f'{self.tag} + {self.recipe}'
 
 
-class IngridientToRecipe(models.Model):
+class IngredientToRecipe(models.Model):
     """Доп. таблица для связи ингридиентов и рецептов."""
     ingredient = models.ForeignKey(
         Ingredient, on_delete=models.CASCADE, verbose_name='ингридиент'
