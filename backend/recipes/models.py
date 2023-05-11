@@ -43,7 +43,7 @@ class Recipe(models.Model):
     )
     tags = models.ManyToManyField(Tag, through='TagToRecipe')
     ingredients = models.ManyToManyField(
-        Ingredient, through='IngridientToRecipe'
+        Ingredient, through='IngredientToRecipe'
     )
 
     class Meta:
