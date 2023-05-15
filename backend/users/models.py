@@ -36,3 +36,30 @@ class User(AbstractUser):
                 fields=['username', 'email'], name='unique_together'
             )
         ]
+
+
+class Follow(models.Model):
+    username = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=False,
+        blank=False, related_name='Подписчик',
+        default=User)
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=False,
+        blank=False, related_name='Автор',
+        default=User)
+
+    class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
+        constraints = (
+            models.UniqueConstraint(
+                fields=(
+                    "username",
+                    "author",
+                ),
+                name="unique_follow",
+            ),
+        )
+
+    def __str__(self):
+        return f'{self.username} follows {self.author}'
