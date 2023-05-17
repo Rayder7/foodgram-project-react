@@ -4,6 +4,7 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
+from .permissions import IsAdminOnly, IsUserOnly
 from .models import Ingredient, Recipe, Tag
 from .serializers import (IngredientSerializer,
                           RecipeSerializer,
@@ -20,12 +21,14 @@ class TagViewSet(viewsets.ModelViewSet):
     """Вьюсет для TagSerializer."""
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    permission_classes = (IsUserOnly,)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
     """Вьюсет для RecipeSerializer."""
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
+    permission_classes = (IsUserOnly,)
 
     def favorite_shopping_post_delete(self, obj):
         recipe = self.get_object()
@@ -39,7 +42,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @action(detail=True,
-            methods=['POST', 'DELETE'],)
+            methods=['POST', 'DELETE'],
+            permission_classes=(permissions.IsAuthenticated,))
     def favorite(self, request, pk=None):
         return self.favorite_shopping_post_delete(request.user.favorite)
 
@@ -49,6 +53,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         Ingredients = Ingredient.objects.all()
         return Ingredients
 
-    @action(methods=['POST', 'DELETE'], detail=True)
+    @action(methods=['POST', 'DELETE'], detail=True,
+            permission_classes=(permissions.IsAuthenticated,))
     def shopping_cart(self, request, pk=None):
-        return request.user.shopping_user
+        return request.user.shop_user
