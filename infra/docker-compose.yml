@@ -9,7 +9,15 @@ services:
       - ./.env
   
   backend:
-    image: 
+    image: ../backend/
+    restart: always
+    volumes:
+      - static_value:/app/static/
+      - media_value:/app/media/
+    depends_on:
+      - db
+    env_file:
+      - ./.env
   
   frontend:
     build:
@@ -17,6 +25,8 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ../frontend/:/app/result_build/
+    depends_on:
+      - backend
 
   nginx:
     image: nginx:1.19.3
@@ -30,3 +40,8 @@ services:
       - media_value:/var/html/media/
     depends_on:
       - frontend
+
+volumes:
+  static_value:
+  media_value:
+  db_data:
