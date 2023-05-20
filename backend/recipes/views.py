@@ -1,14 +1,11 @@
-from rest_framework import viewsets
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
-from .permissions import IsAdminOnly, IsUserOnly
 from .models import Ingredient, Recipe, Tag
-from .serializers import (IngredientSerializer,
-                          RecipeSerializer,
-                          TagSerializer)
+from .permissions import IsAdminOnly, IsUserOnly
+from .serializers import IngredientSerializer, RecipeSerializer, TagSerializer
 
 
 class IngredientViewSet(viewsets.ModelViewSet):
