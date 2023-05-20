@@ -5,7 +5,7 @@ from .models import Follow, User
 from recipes.models import Recipe
 
 
-class UserSerializer(UserSerializer):
+class CustomUserSerializer(UserSerializer):
     """Серилизатор для модели User."""
     is_subscribed = serializers.SerializerMethodField(read_only=True)
 

@@ -7,19 +7,14 @@ app_name = 'users'
 
 router_v1 = DefaultRouter()
 router_v1.register(
-    r'users/subscriptions', SubscriptionListView, basename='sub'
+    r'users/subscriptions', SubscriptionListView, basename='subscriptions'
     )
 
 urlpatterns = [
-    path('', include('djoser.urls')),
-    path('', include(router_v1.urls)),
-    path('auth/token/login/',
-         TokenCreateView.as_view(),
-         name='login'),
-    path('auth/token/logout/',
-         CustomTokenDestroyView.as_view(),
-         name='logout'),
     path('users/<int:pk>/subscribe/',
          follow_author,
          name='follow-author'),
+    path(r'', include(router_v1.urls)),
+    path('auth/', include('djoser.urls.authtoken')),
+
 ]
