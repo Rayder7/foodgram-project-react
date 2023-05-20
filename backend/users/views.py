@@ -1,61 +1,47 @@
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from djoser import utils
-from djoser.views import TokenDestroyView
-from rest_framework import viewsets, status
+from djoser.views import UserViewSet
+
+from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Follow, User
-from .serializers import (FollowSerializer,)
+from .serializers import UserSerializer, SubscribeListSerializer
 
 
-def follow_author(request, pk):
-    """Подписка на автора."""
-    user = get_object_or_404(User, username=request.user.username)
-    author = get_object_or_404(User, pk=pk)
-
-    if request.method == "POST":
-        if user.id == author.id:
-            content = {'errors': 'Подписаться на себя нельзя'}
-            return Response(content, status=status.HTTP_400_BAD_REQUEST)
-        try:
-            Follow.objects.create(user=user, author=author)
-        except Exception:
-            content = {'errors': 'Подписка уже оформлена!'}
-            return Response(content, status=status.HTTP_400_BAD_REQUEST)
-        follows = User.objects.all().filter(username=author)
-        seialiser = FollowSerializer(
-            follows,
-            context={'request': request},
-            many=True
-        )
-        return Response(seialiser.data, status=status.HTTP_201_CREATED)
-
-    if request.method == 'DELETE':
-        try:
-            subscription = Follow.objects.get(user=user, author=author)
-        except Exception:
-            content = {'errors': 'Вы не подписаны на данного автора'}
-            return Response(content, status=status.HTTP_400_BAD_REQUEST)
-        subscription.delete()
-        return HttpResponse('Вы успешно отписаны от этого автора',
-                            status=status.HTTP_204_NO_CONTENT)
-
-
-class SubscriptionListView(viewsets.ReadOnlyModelViewSet):
-    """Вью для генерации списка подписок пользователя."""
+class UserViewSet(UserViewSet):
     queryset = User.objects.all()
-    serializer_class = FollowSerializer
-    permission_classes = (IsAuthenticated,)
+    serializer_class = UserSerializer
 
-    def get_gyeryset(self):
-        user = self.request.user
-        new_queryset = User.objects.filter(fallowing__user=user)
-        return new_queryset
+    @action(
+        detail=True,
+        methods=['post', 'delete'],
+        permission_classes=[IsAuthenticated],
+    )
+    def subscribe(self, request, id):
+        user = request.user
+        author = get_object_or_404(User, pk=id)
 
+        if request.method == 'POST':
+            serializer = SubscribeListSerializer(
+                author, data=request.data, context={'request': request}
+            )
+            serializer.is_valid(raise_exception=True)
+            Follow.objects.create(user=user, author=author)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-class CustomTokenDestroyView(TokenDestroyView):
+        if request.method == 'DELETE':
+            get_object_or_404(
+                Follow, user=user, author=author
+            ).delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
-    def post(self, request):
-        utils.logout_user(request)
-        return Response(status=status.HTTP_201_CREATED)
+    @action(detail=False, permission_classes=[IsAuthenticated])
+    def subscriptions(self, request):
+        user = request.user
+        queryset = User.objects.filter(following__user=user)
+        pages = self.paginate_queryset(queryset)
+        serializer = SubscribeListSerializer(
+            pages, many=True, context={'request': request}
+        )
+        return self.get_paginated_response(serializer.data)

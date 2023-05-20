@@ -1,87 +1,74 @@
-from rest_framework import serializers
+from django.shortcuts import get_object_or_404
+from rest_framework import status
 from djoser.serializers import UserCreateSerializer, UserSerializer
-
-from .models import Follow, User
-from recipes.models import Recipe
-
-
-class CustomUserSerializer(UserSerializer):
-    """Серилизатор для модели User."""
-    is_subscribed = serializers.SerializerMethodField(read_only=True)
-
-    class Meta:
-        fields = (
-            'username', 'first_name', 'last_name', 'email',
-            'password', 'role', 'is_subscribed'
-        )
-        model = User
-
-    def get_is_sub(self, obj):
-        """Проверка подписан ли юзер на автора."""
-        request = self.context.get('request')
-        if not request or request.user.is_anonymoues:
-            return False
-        return Follow.objects.filter(user=self.context['request'].user,
-                                     author=obj).exists()
+from rest_framework.exceptions import ValidationError
+from rest_framework.fields import SerializerMethodField
+from .models import User
+from recipes.serializers import FavoriteRecipeSerializer
 
 
-class CreateUserSeralizer(UserCreateSerializer):
-    """Сериализатор для создания юзера."""
-    class Meta:
-        model = User
-        fields = (
-            'username', 'first_name', 'last_name', 'email',
-            'password'
-        )
-
-
-class FollowRecipeSerializer(serializers.ModelSerializer):
-    """
-    Сериализатор для короткой модели рецепта в подписках.
-    """
-    class Meta:
-        model = Recipe
-        fields = ('id', 'name', 'image', 'cooking_time')
-
-
-class FollowSerializer(serializers.ModelSerializer):
-    """
-    Сериализатор для подписок.
-    """
-    is_subscribed = serializers.SerializerMethodField(read_only=True)
-    recipes = serializers.SerializerMethodField(read_only=True)
-    recipes_count = serializers.SerializerMethodField(read_only=True)
+class UserSerializer(UserSerializer):
+    """ Сериализатор пользователя """
+    is_subscribed = SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
-        fields = (
-            'email',
-            'id',
-            'username',
-            'first_name',
-            'last_name',
-            'is_subscribed',
-            'recipes',
-            'recipes_count',
-        )
+        fields = ('email', 'id', 'username', 'first_name',
+                  'last_name', 'is_subscribed', )
 
     def get_is_subscribed(self, obj):
-        user = self.context.get('request').user
-        if not user:
+        request = self.context.get('request')
+        if self.context.get('request').user.is_anonymous:
             return False
-        return Follow.objects.filter(user=user, author=obj).exists()
+        return obj.following.filter(user=request.user).exists()
+
+
+class UserCreateSerializer(UserCreateSerializer):
+    """ Сериализатор создания пользователя """
+
+    class Meta:
+        model = User
+        fields = (
+            'email', 'username', 'first_name',
+            'last_name', 'password')
+
+
+class SubscribeListSerializer(UserSerializer):
+    """ Сериализатор для получения подписок """
+    recipes_count = SerializerMethodField()
+    recipes = SerializerMethodField()
+
+    class Meta(UserSerializer.Meta):
+        fields = UserSerializer.Meta.fields + ('recipes_count', 'recipes')
+        read_only_fields = ('email', 'username', 'first_name', 'last_name')
+
+    def validate(self, data):
+        author_id = self.context.get(
+            'request').parser_context.get('kwargs').get('id')
+        author = get_object_or_404(User, id=author_id)
+        user = self.context.get('request').user
+        if user.follower.filter(author=author_id).exists():
+            raise ValidationError(
+                detail='Подписка уже существует',
+                code=status.HTTP_400_BAD_REQUEST,
+            )
+        if user == author:
+            raise ValidationError(
+                detail='Нельзя подписаться на самого себя',
+                code=status.HTTP_400_BAD_REQUEST,
+            )
+        return data
+
+    def get_recipes_count(self, obj):
+        return obj.recipes.count()
 
     def get_recipes(self, obj):
         request = self.context.get('request')
-        limit_recipes = request.query_params.get('recipes_limit')
-        if limit_recipes is not None:
-            recipes = obj.recipes.all()[:(int(limit_recipes))]
-        else:
-            recipes = obj.recipes.all()
-        context = {'request': request}
-        return FollowRecipeSerializer(recipes, many=True,
-                                      context=context).data
-
-    @staticmethod
-    def get_recipes_count(obj):
-        return obj.recipes.count()
+        limit = request.GET.get('recipes_limit')
+        recipes = obj.recipes.all()
+        if limit:
+            recipes = recipes[: int(limit)]
+        serializer = FavoriteRecipeSerializer(
+            recipes, many=True, read_only=True
+        )
+        return serializer.data
