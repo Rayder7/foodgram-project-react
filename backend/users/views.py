@@ -39,7 +39,7 @@ class UserViewSet(UserViewSet):
                 content = {'errors': 'Вы не подписаны на данного автора'}
                 return Response(content, status=status.HTTP_400_BAD_REQUEST)
             sub.delete()
-            return HttpResponse('Вы успешно отписаны от этого автора',
+            return HttpResponse(sub, 'Вы успешно отписаны от этого автора',
                                 status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, permission_classes=[IsAuthenticated])
