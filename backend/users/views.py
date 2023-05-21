@@ -1,5 +1,4 @@
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
 from rest_framework import status
@@ -38,8 +37,6 @@ class UserViewSet(UserViewSet):
             except ObjectDoesNotExist:
                 content = {'errors': 'Вы не подписаны на данного автора'}
                 return Response(content, status=status.HTTP_400_BAD_REQUEST)
-            return HttpResponse('Вы успешно отписаны от этого автора',
-                                status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, permission_classes=[IsAuthenticated])
     def subscriptions(self, request):
