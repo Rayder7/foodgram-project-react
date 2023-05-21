@@ -34,7 +34,7 @@ class UserViewSet(UserViewSet):
 
         if request.method == 'DELETE':
             try:
-                sub = get_object_or_404(Follow, user=user, author=author)
+                sub = Follow.objects.get(user=user, author=author)
             except ObjectDoesNotExist:
                 content = {'errors': 'Вы не подписаны на данного автора'}
                 return Response(content, status=status.HTTP_400_BAD_REQUEST)
