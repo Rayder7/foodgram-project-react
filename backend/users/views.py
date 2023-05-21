@@ -34,13 +34,12 @@ class UserViewSet(UserViewSet):
 
         if request.method == 'DELETE':
             try:
-                sub = Follow.objects.get(user=user, author=author)
+                subscription = Follow.objects.get(user=user, author=author)
             except ObjectDoesNotExist:
                 content = {'errors': 'Вы не подписаны на данного автора'}
                 return Response(content, status=status.HTTP_400_BAD_REQUEST)
-            if sub is not None:
-                sub.delete()
-            return HttpResponse(sub, 'Вы успешно отписаны от этого автора',
+            subscription.delete()
+            return HttpResponse('Вы успешно отписаны от этого автора',
                                 status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, permission_classes=[IsAuthenticated])
