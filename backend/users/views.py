@@ -38,7 +38,8 @@ class UserViewSet(UserViewSet):
             except ObjectDoesNotExist:
                 content = {'errors': 'Вы не подписаны на данного автора'}
                 return Response(content, status=status.HTTP_400_BAD_REQUEST)
-            sub.delete()
+            if sub is not None:
+                sub.delete()
             return HttpResponse(sub, 'Вы успешно отписаны от этого автора',
                                 status=status.HTTP_204_NO_CONTENT)
 
