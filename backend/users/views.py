@@ -20,7 +20,7 @@ class UserViewSet(UserViewSet):
         permission_classes=[IsAuthenticated],
     )
     def subscribe(self, request, id):
-        user = request.user
+        user = get_object_or_404(User, username=request.user.username)
         author = get_object_or_404(User, pk=id)
 
         if request.method == 'POST':
