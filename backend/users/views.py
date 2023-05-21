@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
 from rest_framework import status
@@ -31,8 +32,13 @@ class UserViewSet(UserViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         if request.method == 'DELETE':
-            get_object_or_404(Follow, user=user, author=author).delete()
-            return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
+            try:
+                sub = get_object_or_404(Follow, user=user, author=author)
+            except ObjectDoesNotExist:
+                content = {'errors': 'Вы не подписаны на данного автора'}
+                return Response(content, status=status.HTTP_400_BAD_REQUEST)
+            sub.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, permission_classes=[IsAuthenticated])
     def subscriptions(self, request):
