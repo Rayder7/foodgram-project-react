@@ -4,7 +4,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from .models import Ingredient, Recipe, Tag
-from .permissions import IsAdminOnly, IsUserOnly
+from .permissions import IsUserOnly
 from .serializers import IngredientSerializer, RecipeSerializer, TagSerializer
 
 
@@ -33,7 +33,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             obj.get(recipe_id=recipe.id).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         if obj.filter(recipe=recipe).exists():
-            raise ValidationError('Рецепт уже в избранном')
+            return ValidationError('Рецепт уже в избранном')
         obj.create(recipe=recipe)
         serializer = RecipeSerializer(instance=recipe)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -47,8 +47,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(methods='GET', detail=False, url_path='download_shopping_cart',
             url_name='download_shopping_cart')
     def download_shopping_cart(self, request):
-        Ingredients = Ingredient.objects.all()
-        return Ingredients
+        return Ingredient.objects.all()
 
     @action(methods=['POST', 'DELETE'], detail=True,
             permission_classes=(permissions.IsAuthenticated,))

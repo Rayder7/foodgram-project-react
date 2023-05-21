@@ -1,7 +1,5 @@
 #  from rest_framework import viewsets, filters, mixins
 
-
-
 # class CRDViewSet(mixins.ListModelMixin,
 #                  mixins.CreateModelMixin,
 #                  mixins.DestroyModelMixin,
