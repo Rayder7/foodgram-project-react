@@ -21,7 +21,7 @@ class UserViewSet(UserViewSet):
         permission_classes=[IsAuthenticated],
     )
     def subscribe(self, request, id):
-        user = get_object_or_404(User, username=request.user.username)
+        user = request.user
         author = get_object_or_404(User, pk=id)
 
         if request.method == 'POST':
@@ -34,14 +34,12 @@ class UserViewSet(UserViewSet):
 
         if request.method == 'DELETE':
             try:
-                Follow.objects.get(user=request.user, author=author).delete()
-            except Follow.DoesNotExist:
-                return Response(
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-            return Response(
-                status=status.HTTP_204_NO_CONTENT
-            )
+                get_object_or_404(Follow, user=user, author=author).delete()
+            except ObjectDoesNotExist:
+                content = {'errors': 'Вы не подписаны на данного автора'}
+                return Response(content, status=status.HTTP_400_BAD_REQUEST)
+            return HttpResponse('Вы успешно отписаны от этого автора',
+                                status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, permission_classes=[IsAuthenticated])
     def subscriptions(self, request):
