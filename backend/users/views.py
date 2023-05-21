@@ -33,14 +33,11 @@ class UserViewSet(UserViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         if request.method == 'DELETE':
-            try:
-                subscription = Follow.objects.get(user=user, author=author)
-            except ObjectDoesNotExist:
-                content = {'errors': 'Вы не подписаны на данного автора'}
-                return Response(content, status=status.HTTP_400_BAD_REQUEST)
+            subscription = get_object_or_404(Follow,
+                                             user=user,
+                                             author=author)
             subscription.delete()
-            return HttpResponse('Вы успешно отписаны от этого автора',
-                                status=status.HTTP_204_NO_CONTENT)
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, permission_classes=[IsAuthenticated])
     def subscriptions(self, request):
