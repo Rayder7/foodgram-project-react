@@ -1,4 +1,4 @@
-name: Foodgram
+name: Foodgram_project
 
 on: [push]
 
