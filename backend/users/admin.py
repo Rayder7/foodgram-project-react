@@ -5,10 +5,11 @@ from .models import Follow, User
 
 class UserAdmin(admin.ModelAdmin):
     list_display = (
-        'username', 'first_name', 'last_name', 'email', 'password', 'role'
+        'username', 'first_name', 'last_name', 'email',
     )
     search_fields = ('username',)
     list_filter = ('username', 'email')
+    ordering = ('username',)
     empty_value_display = '-пусто-'
 
 

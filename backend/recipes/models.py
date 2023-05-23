@@ -1,3 +1,5 @@
+from django.core.validators import (MaxValueValidator, MinValueValidator,
+                                    RegexValidator)
 from django.db import models
 from users.models import User
 
@@ -6,7 +8,13 @@ class Tag(models.Model):
     """Теги рецептов."""
     name = models.CharField('Название', max_length=200, unique=True)
     color = models.CharField(
-        'Цвет', max_length=7, default="#ffffff", unique=True
+        'Цвет', max_length=7, default="#ffffff", unique=True, format='hex',
+        validators=[
+            RegexValidator(
+                regex="^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$",
+                message='Проверьте вводимый формат',
+            )
+        ],
     )
     slug = models.SlugField('Слаг', unique=True)
 
@@ -21,15 +29,21 @@ class Tag(models.Model):
 
 class Ingredient(models.Model):
     """Модель ингридиентов."""
-    name = models.CharField('Название', max_length=100)
+    name = models.CharField('Название', max_length=100, db_index=True)
     measurement_unit = models.CharField('Еденица измерения', max_length=30)
 
     class Meta:
         verbose_name = ('Ингридиент')
         verbose_name_plural = ("Ингридиенты")
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'measurement_unit'],
+                name='unique_name_measurement_unit'
+            )
+        ]
 
     def __str__(self):
-        return self.name
+        return f'{self.name}, {self.measurement_unit}'
 
 
 class Recipe(models.Model):
