@@ -27,7 +27,7 @@ jobs:
   build_and_push_to_docker_hub:
     name: Push to Docker Hub
     runs-on: ubuntu-latest
-    needs: tests
+    needs: deploy
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2 
@@ -54,7 +54,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    needs: build_and_push_to_docker_hub
+    needs: tests
     environment: master < -- here 
     steps:
       - name: Executing remote ssh commands to deploy
@@ -90,5 +90,4 @@ jobs:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: ${{ github.workflow }} успешно выполнен!
-      
       
