@@ -8,7 +8,7 @@ class Tag(models.Model):
     """Теги рецептов."""
     name = models.CharField('Название', max_length=200, unique=True)
     color = models.CharField(
-        'Цвет', max_length=7, default="#ffffff", unique=True, format='hex',
+        'Цвет', max_length=7, default="#ffffff", unique=True,
         validators=[
             RegexValidator(
                 regex="^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$",
