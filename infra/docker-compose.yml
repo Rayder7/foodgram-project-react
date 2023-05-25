@@ -18,6 +18,7 @@ services:
       - db
     env_file:
       - ./.env
+    container_name: foodgram_backend
   
   frontend:
     image: rayder7/foodgram-frontend:latest
@@ -25,6 +26,7 @@ services:
       - ../frontend/:/app/result_build/
     depends_on:
       - backend
+    container_name: foodgram_frontend
 
   nginx:
     image: nginx:1.19.3
@@ -39,6 +41,7 @@ services:
       - media_value:/var/html/media/
     depends_on:
       - frontend
+    container_name: foodgram_nginx
 
 volumes:
   static_value:
