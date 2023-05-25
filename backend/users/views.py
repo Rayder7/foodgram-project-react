@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
+from recipes.pagination import CustomPagination
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -12,6 +13,7 @@ from .serializers import SubscribeListSerializer, UserSerializer
 class UserViewSet(UserViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    pagination_class = CustomPagination
 
     @action(
         detail=True,
@@ -19,7 +21,7 @@ class UserViewSet(UserViewSet):
         permission_classes=[IsAuthenticated],
     )
     def subscribe(self, request, id):
-        user = get_object_or_404(User, username=request.user.username)
+        user = request.user
         author = get_object_or_404(User, pk=id)
 
         if request.method == 'POST':

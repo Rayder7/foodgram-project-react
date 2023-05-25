@@ -1,4 +1,4 @@
-from csv import reader
+import json
 
 from django.core.management.base import BaseCommand
 from recipes.models import Ingredient
@@ -18,11 +18,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         with open(
-                'recipes/data/ingredients.csv', 'r',
+                'recipes/data/ingredients.json', 'r',
                 encoding='UTF-8'
         ) as ingredients:
-            for row in reader(ingredients):
-                if len(row) == 2:
-                    Ingredient.objects.get_or_create(
-                        name=row[0], measurement_unit=row[1],
-                    )
+            ingredient_data = json.loads(ingredients.read())
+            for ingredients in ingredient_data:
+                Ingredient.objects.get_or_create(**ingredients)
+        self.stdout.write(self.style.SUCCESS('Данные загружены'))
