@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from djoser.serializers import UserCreateSerializer, UserSerializer
-from recipes.serializers import FavoriteRecipeSerializer
+from recipes.serializers import RecipeShortSerializer
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import SerializerMethodField
@@ -69,7 +69,7 @@ class SubscribeListSerializer(UserSerializer):
         recipes = obj.recipes.all()
         if limit:
             recipes = recipes[: int(limit)]
-        serializer = FavoriteRecipeSerializer(
+        serializer = RecipeShortSerializer(
             recipes, many=True, read_only=True
         )
         return serializer.data

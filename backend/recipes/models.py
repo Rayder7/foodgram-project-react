@@ -1,3 +1,4 @@
+from colorfield.fields import ColorField
 from django.core.validators import (MaxValueValidator, MinValueValidator,
                                     RegexValidator)
 from django.db import models
@@ -7,8 +8,8 @@ from users.models import User
 class Tag(models.Model):
     """Теги рецептов."""
     name = models.CharField('Название', max_length=200, unique=True)
-    color = models.CharField(
-        'Цвет', max_length=7, default="#ffffff", unique=True,
+    color = ColorField(
+        'Цвет', max_length=7, default="#ffffff", unique=True, format='hex',
         validators=[
             RegexValidator(
                 regex="^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$",
@@ -75,7 +76,7 @@ class Recipe(models.Model):
     )
     pub_date = models.DateTimeField(
         verbose_name='Дата публикации',
-        auto_now_add=True
+        auto_now_add=True,
     )
 
     class Meta:
@@ -112,7 +113,8 @@ class IngredientToRecipe(models.Model):
 
     amount = models.PositiveSmallIntegerField(
         validators=[MinValueValidator(1)],
-        verbose_name='Количество ингредиента'
+        verbose_name='Количество ингредиента',
+        default=1
     )
 
     class Meta:
@@ -148,7 +150,7 @@ class FavoriteRecipe(models.Model):
 class Favorite(FavoriteRecipe):
     """ Модель добавление в избраное. """
 
-    class Meta(FavoriteRecipe.Meta):
+    class Meta:
         default_related_name = 'favorites'
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранное'
@@ -157,7 +159,7 @@ class Favorite(FavoriteRecipe):
 class ShopList(FavoriteRecipe):
     """Модель списка покупок."""
 
-    class Meta(FavoriteRecipe.Meta):
+    class Meta:
         default_related_name = 'shopping_list'
         verbose_name = 'Корзина'
         verbose_name_plural = 'Корзина'
