@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY', default='django-insecure-brpw^szb3&kza19b70t6r29b_w_-kuf-)4!w5wox6xm0wyj2ta')
 
 DEBUG = False
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['62.84.123.176']
 
 AUTH_USER_MODEL = 'users.User'
 
