@@ -9,10 +9,13 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', default='django-insecure-brpw^szb3&kza19b70t6r29b_w_-kuf-)4!w5wox6xm0wyj2ta')
+if SECRET_KEY == 'False':
+    SECRET_KEY = False
 
 DEBUG = os.getenv('DEBUG', default=False)
 if DEBUG == 'False':
     DEBUG = False
+
 ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', default='*')]
 
 AUTH_USER_MODEL = 'users.User'
