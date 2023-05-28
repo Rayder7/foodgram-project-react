@@ -13,7 +13,7 @@ class IngredientInline(admin.TabularInline):
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     """ Админ панель управление рецептами """
-    list_display = ('name', 'author', 'in_favorite', 'cooking_time',
+    list_display = ('name', 'author', 'favorites', 'cooking_time',
                     'get_favorites', 'get_ingredients',)
     list_filter = ('name', 'author', 'tags')
     search_fields = ('name', 'author', 'tags')
