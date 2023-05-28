@@ -1,7 +1,7 @@
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
+from users.serializers import UserSerializer
 
-from users.serializers import UserSerializer  # isort:skip
 from recipes.models import (Favorite, Ingredient, IngredientToRecipe, Recipe,
                             ShopList, Tag)
 
