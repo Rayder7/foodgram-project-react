@@ -1,9 +1,9 @@
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
-from users.serializers import UserSerializer
 
-from .models import (Favorite, Ingredient, IngredientToRecipe, Recipe,
-                     ShopList, Tag)
+from users.serializers import UserSerializer  # isort:skip
+from recipes.models import (Favorite, Ingredient, IngredientToRecipe, Recipe,
+                            ShopList, Tag)
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -59,15 +59,13 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
     def get_is_favorited(self, obj):
         request = self.context.get('request')
-        if not request or request.user.is_anonymous:
-            return False
-        return obj.favorites.filter(user=request.user).exists()
+        return (request.user.is_authenticated
+                and obj.favorites.filter(user=request.user).exists())
 
     def get_is_in_shopping_cart(self, obj):
         request = self.context.get('request')
-        if not request or request.user.is_anonymous:
-            return False
-        return obj.shopping_list.filter(user=request.user).exists()
+        return (request.user.is_authenticated
+                and obj.shopping_list.filter(user=request.user).exists())
 
 
 class CreateRecipeSerializer(serializers.ModelSerializer):
@@ -91,10 +89,19 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
             'name', 'image', 'text', 'cooking_time',)
 
     def validate_tags(self, tags):
+        tags_list = []
         for tag in tags:
             if not Tag.objects.filter(id=tag.id).exists():
                 raise serializers.ValidationError(
                     'Указанного тега не существует')
+        for tag in tags:
+            if tag['id'] in tags_list:
+                raise serializers.ValidationError(
+                    'Теги должны быть уникальны')
+            tags_list.append(tag['id'])
+            if int(tag.get('amount')) < 1:
+                raise serializers.ValidationError(
+                    'Отсуствуют теги')
         return tags
 
     def validate_cooking_time(self, cooking_time):

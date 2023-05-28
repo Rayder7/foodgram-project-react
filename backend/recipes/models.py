@@ -21,8 +21,8 @@ class Tag(models.Model):
 
     class Meta:
         ordering = ('name',)
-        verbose_name = ('тег')
-        verbose_name_plural = ("Теги")
+        verbose_name = 'тег'
+        verbose_name_plural = 'Теги'
 
     def __str__(self):
         return self.name
@@ -34,8 +34,8 @@ class Ingredient(models.Model):
     measurement_unit = models.CharField('Еденица измерения', max_length=30)
 
     class Meta:
-        verbose_name = ('Ингридиент')
-        verbose_name_plural = ("Ингридиенты")
+        verbose_name = 'Ингридиент'
+        verbose_name_plural = 'Ингридиенты'
         constraints = [
             models.UniqueConstraint(
                 fields=['name', 'measurement_unit'],
@@ -44,14 +44,14 @@ class Ingredient(models.Model):
         ]
 
     def __str__(self):
-        return f'{self.name}, {self.measurement_unit}'
+        return f'{self.name[:10]} {self.measurement_unit}'
 
 
 class Recipe(models.Model):
     """Модель рецепта."""
     name = models.CharField('Название', max_length=200)
     text = models.TextField('Описание')
-    cooking_time = models.PositiveIntegerField(
+    cooking_time = models.PositiveSmallIntegerField(
         'Время приготовления',
         validators=[
             MaxValueValidator(
@@ -84,7 +84,7 @@ class Recipe(models.Model):
         verbose_name_plural = ('Рецепты')
 
     def __str__(self):
-        return self.name
+        return self.name[:10]
 
 
 class TagToRecipe(models.Model):
@@ -95,11 +95,11 @@ class TagToRecipe(models.Model):
     )
 
     class Meta:
-        verbose_name = ('тег')
-        verbose_name_plural = ("Теги")
+        verbose_name = 'тег'
+        verbose_name_plural = 'Теги'
 
     def __str__(self):
-        return f'{self.tag} + {self.recipe}'
+        return f'{self.tag} + {self.recipe[:10]}'
 
 
 class IngredientToRecipe(models.Model):
@@ -112,21 +112,21 @@ class IngredientToRecipe(models.Model):
     )
 
     amount = models.PositiveSmallIntegerField(
-        validators=[MinValueValidator(1)],
+        validators=[MinValueValidator(1), MaxValueValidator(30)],
         verbose_name='Количество ингредиента',
         default=1
     )
 
     class Meta:
-        verbose_name = ('ингридиент')
-        verbose_name_plural = ("ингридиенты")
+        verbose_name = 'ингридиент'
+        verbose_name_plural = 'ингридиенты'
 
     def __str__(self):
-        return f'{self.ingredient} + {self.recipe}'
+        return f'{self.ingredient[:10]} + {self.recipe[:10]}'
 
 
-class FavoriteRecipe(models.Model):
-    """Модель избранных рецептов."""
+class FavoriteShopCart(models.Model):
+    """Модель избранных рецептов и корзины покупок."""
     recipe = models.ForeignKey(
         Recipe, on_delete=models.CASCADE,
         verbose_name=('Рецепт'),
@@ -140,14 +140,10 @@ class FavoriteRecipe(models.Model):
     )
 
     class Meta:
-        verbose_name = ('Избранное')
-        verbose_name_plural = ('Избранные')
-
-    def __str__(self):
-        return f' рецепт {self.recipe} в избранном пользователя {self.user}'
+        abstract = True
 
 
-class Favorite(FavoriteRecipe):
+class Favorite(FavoriteShopCart):
     """ Модель добавление в избраное. """
 
     class Meta:
@@ -155,11 +151,19 @@ class Favorite(FavoriteRecipe):
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранное'
 
+        def __str__(self):
+            return (f' рецепт {FavoriteShopCart.recipe}'
+                    f'в избранном пользователя {FavoriteShopCart.user}')
 
-class ShopList(FavoriteRecipe):
+
+class ShopList(FavoriteShopCart):
     """Модель списка покупок."""
 
     class Meta:
         default_related_name = 'shopping_list'
         verbose_name = 'Корзина'
         verbose_name_plural = 'Корзина'
+
+    def __str__(self):
+        return (f' рецепт {FavoriteShopCart.recipe}'
+                f'в корзине пользователя {FavoriteShopCart.user}')
