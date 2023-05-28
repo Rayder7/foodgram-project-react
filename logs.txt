@@ -1,0 +1,16 @@
+^[[35mdb_1        |^[[0m 2023-05-28 08:11:52.049 UTC [1] LOG:  starting PostgreSQL 13.0 on x86_64-pc-linux-musl, compiled by gcc (Alpine 9.3.0) 9.3.0, 64-bit
+^[[35mdb_1        |^[[0m 2023-05-28 08:11:52.049 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+^[[35mdb_1        |^[[0m 2023-05-28 08:11:52.049 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+^[[35mdb_1        |^[[0m 2023-05-28 08:11:52.090 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+^[[35mdb_1        |^[[0m 2023-05-28 08:11:52.171 UTC [21] LOG:  database system was shut down at 2023-05-28 08:11:37 UTC
+^[[35mdb_1        |^[[0m 2023-05-28 08:11:52.198 UTC [1] LOG:  database system is ready to accept connections
+^[[32mfoodgram_nginx |^[[0m /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+^[[32mfoodgram_nginx |^[[0m /docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
+^[[32mfoodgram_nginx |^[[0m /docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+^[[32mfoodgram_nginx |^[[0m 10-listen-on-ipv6-by-default.sh: Getting the checksum of /etc/nginx/conf.d/default.conf
+^[[32mfoodgram_nginx |^[[0m 10-listen-on-ipv6-by-default.sh: error: /etc/nginx/conf.d/default.conf differs from the packaged version
+^[[32mfoodgram_nginx |^[[0m /docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+^[[32mfoodgram_nginx |^[[0m /docker-entrypoint.sh: Configuration complete; ready for start up
+^[[32mfoodgram_nginx |^[[0m 2023/05/28 08:12:29 [warn] 28#28: 1024 worker_connections are not enough, reusing connections
+^[[32mfoodgram_nginx |^[[0m 2023/05/28 08:12:29 [alert] 28#28: 1024 worker_connections are not enough
+^[[32mfoodgram_nginx |^[[0m 2023/05/28 08:12:29 [error] 28#28: *1022 recv() failed (104: Connection reset by peer) while reading response header from upstream, client: 62.84.123.176, server: 62.84.123.176, request: "GE>^[[32mfoodgram_nginx |^[[0m 2023/05/28 08:12:29 [error] 28#28: *1022 open() "/var/html/frontend/50x.html" failed (2: No such file or directory), client: 62.84.123.176, server: 62.84.123.176, request: "GET /admin/ HTTP/>^[[32mfoodgram_nginx |^[[0m 62.84.123.176 - - [28/May/2023:08:12:29 +0000] "GET /admin/ HTTP/1.0" 404 548 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/53>
