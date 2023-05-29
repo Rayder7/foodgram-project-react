@@ -56,8 +56,7 @@ class Recipe(models.Model):
         validators=[
             MaxValueValidator(
                 1, message='Минимальное время готовки не менее 1 минуты'),
-            MaxValueValidator(
-                1441, message='Время приготовления не более 24 часов!')
+            MaxValueValidator(600)
         ]
     )
     image = models.ImageField('Изображение', upload_to='recipes/image/')
