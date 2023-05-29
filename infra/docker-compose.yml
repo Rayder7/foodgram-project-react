@@ -14,7 +14,6 @@ services:
     image: rayder7/foodgram-backend:latest
     restart: always
     volumes:
-      - redoc:/app/docs/
       - static_value:/app/static/
       - media_value:/app/media/
     depends_on:
