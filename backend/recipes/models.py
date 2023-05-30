@@ -73,7 +73,7 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(
         Ingredient, through='IngredientToRecipe',
         verbose_name='Ингридиенты',
-        related_name='ingredient_recipe'
+        related_name='recipes'
     )
     pub_date = models.DateTimeField(
         verbose_name='Дата публикации',
