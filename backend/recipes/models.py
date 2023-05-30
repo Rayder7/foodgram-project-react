@@ -88,9 +88,11 @@ class Recipe(models.Model):
 
 class TagToRecipe(models.Model):
     """Доп. таблица для связи тегов и рецептов."""
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE, verbose_name='тег')
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE, verbose_name='тег',
+                            related_name="tag_recipe")
     recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE, verbose_name='рецепт'
+        Recipe, on_delete=models.CASCADE, verbose_name='рецепт',
+        related_name="recipe_tag"
     )
 
     class Meta:
@@ -101,43 +103,18 @@ class TagToRecipe(models.Model):
         return f'{self.tag} + {self.recipe[:10]}'
 
 
-class IngredientToRecipe(models.Model):
-    """Доп. таблица для связи ингридиентов и рецептов."""
-    ingredient = models.ForeignKey(
-        Ingredient, on_delete=models.CASCADE, verbose_name='ингридиент'
-    )
-    recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE, verbose_name='рецепт',
-        related_name='ingredienttorecipe'
-
-    )
-
-    amount = models.PositiveIntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(2600)],
-        verbose_name='Количество ингредиента',
-        default=1
-    )
-
-    class Meta:
-        verbose_name = 'ингридиент'
-        verbose_name_plural = 'ингридиенты'
-
-    def __str__(self):
-        return f'{self.ingredient[:10]} + {self.recipe[:10]}'
-
-
 class Favorite(models.Model):
     """ Модель добавление в избраное. """
     recipe = models.ForeignKey(
         Recipe, on_delete=models.CASCADE,
         verbose_name='Рецепт',
-        related_name="in_favorites"
+        related_name="in_favorite"
     )
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         verbose_name='Пользователь',
-        related_name="favorites"
+        related_name="favorite"
     )
 
     class Meta:
@@ -170,3 +147,29 @@ class ShopList(models.Model):
     def __str__(self):
         return (f' рецепт {ShopList.recipe}'
                 f'в корзине пользователя {ShopList.user}')
+
+
+class IngredientToRecipe(models.Model):
+    """Доп. таблица для связи ингридиентов и рецептов."""
+    ingredient = models.ForeignKey(
+        Ingredient, on_delete=models.CASCADE, verbose_name='ингридиент'
+    )
+    recipe = models.ForeignKey(
+        Recipe, on_delete=models.CASCADE, verbose_name='рецепт',
+        related_name='ingredienttorecipe'
+
+    )
+
+    amount = models.PositiveIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(2600)],
+        verbose_name='Количество ингредиента',
+        related_name="recipetoingredient",
+        default=1
+    )
+
+    class Meta:
+        verbose_name = 'ингридиент'
+        verbose_name_plural = 'ингридиенты'
+
+    def __str__(self):
+        return f'{self.ingredient[:10]} + {self.recipe[:10]}'
