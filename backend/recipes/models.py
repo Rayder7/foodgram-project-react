@@ -144,25 +144,45 @@ class FavoriteShopCart(models.Model):
         abstract = True
 
 
-class Favorite(FavoriteShopCart):
+class Favorite(models.Model):
     """ Модель добавление в избраное. """
+    recipe = models.ForeignKey(
+        Recipe, on_delete=models.CASCADE,
+        verbose_name='Рецепт',
+        related_name="in_favorite"
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='Пользователь',
+        related_name="favorite"
+    )
 
     class Meta:
-        default_related_name = 'favorites'
         verbose_name = 'Избранные рецепты'
 
         def __str__(self):
-            return (f' рецепт {FavoriteShopCart.recipe}'
-                    f'в избранном пользователя {FavoriteShopCart.user}')
+            return (f' рецепт {Favorite.recipe}'
+                    f'в избранном пользователя {Favorite.user}')
 
 
-class ShopList(FavoriteShopCart):
+class ShopList(models.Model):
     """Модель списка покупок."""
+    recipe = models.ForeignKey(
+        Recipe, on_delete=models.CASCADE,
+        verbose_name='Рецепт',
+        related_name="shop_recipe"
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='Пользователь',
+        related_name="shop_user"
+    )
 
     class Meta:
-        default_related_name = 'shopping_list'
         verbose_name = 'Корзина покупок'
 
     def __str__(self):
-        return (f' рецепт {FavoriteShopCart.recipe}'
-                f'в корзине пользователя {FavoriteShopCart.user}')
+        return (f' рецепт {ShopList.recipe}'
+                f'в корзине пользователя {ShopList.user}')
