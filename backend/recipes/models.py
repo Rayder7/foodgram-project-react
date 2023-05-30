@@ -67,11 +67,13 @@ class Recipe(models.Model):
     tags = models.ManyToManyField(
         Tag, through='TagToRecipe',
         verbose_name=('Теги'),
+        related_name='recipes'
     )
 
     ingredients = models.ManyToManyField(
         Ingredient, through='IngredientToRecipe',
         verbose_name='Ингридиенты',
+        related_name='recipes'
     )
     pub_date = models.DateTimeField(
         verbose_name='Дата публикации',
@@ -88,11 +90,11 @@ class Recipe(models.Model):
 
 class TagToRecipe(models.Model):
     """Доп. таблица для связи тегов и рецептов."""
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE, verbose_name='тег',
-                            related_name="tag_recipe")
+    tag = models.ForeignKey(
+        Tag, on_delete=models.CASCADE, verbose_name='тег',
+    )
     recipe = models.ForeignKey(
         Recipe, on_delete=models.CASCADE, verbose_name='рецепт',
-        related_name="recipe_tag"
     )
 
     class Meta:
