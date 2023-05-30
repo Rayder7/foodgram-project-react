@@ -14,13 +14,13 @@ class IngredientInline(admin.TabularInline):
 class RecipeAdmin(admin.ModelAdmin):
     """ Админ панель управление рецептами """
     list_display = ('name', 'author', 'cooking_time',
-                    'get_favorites',)
+                    'in_favorite',)
     list_filter = ('name', 'author', 'tags')
     search_fields = ('name', 'author', 'tags')
     inlines = (IngredientInline,)
     empty_value_display = '-пусто-'
 
-    def get_favorites(self, obj):
+    def in_favorite(self, obj):
         return obj.in_favorite.count()
 
 
