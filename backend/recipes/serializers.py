@@ -9,14 +9,14 @@ from recipes.models import (Favorite, Ingredient, IngredientToRecipe, Recipe,
 class TagSerializer(serializers.ModelSerializer):
     """Серилизатор для модели Tag."""
     class Meta:
-        fields = ('name', 'color', 'slug')
+        fields = ('id', 'name', 'color', 'slug')
         model = Tag
 
 
 class IngredientSerializer(serializers.ModelSerializer):
     """Серилизатор для модели Ingredient."""
     class Meta:
-        fields = ('name', 'measurement_unit')
+        fields = ('id', 'name', 'measurement_unit')
         model = Ingredient
 
 
@@ -65,7 +65,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
     def get_is_in_shopping_cart(self, obj):
         request = self.context.get('request')
         return (request.user.is_authenticated
-                and obj.shopping_list.filter(user=request.user).exists())
+                and obj.shop.filter(user=request.user).exists())
 
 
 class CreateRecipeSerializer(serializers.ModelSerializer):
@@ -141,7 +141,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         request = self.context.get('request', None)
         tags = validated_data.pop('tags')
-        ingredients = validated_data.pop('ingredients')
+        ingredients = validated_data.pop('ingredient')
         recipe = Recipe.objects.create(author=request.user, **validated_data)
         recipe.tags.set(tags)
         self.create_ingredients(recipe, ingredients)

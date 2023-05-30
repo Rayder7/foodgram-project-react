@@ -67,13 +67,11 @@ class Recipe(models.Model):
     tags = models.ManyToManyField(
         Tag, through='TagToRecipe',
         verbose_name=('Теги'),
-        related_name='recipes'
     )
 
     ingredients = models.ManyToManyField(
         Ingredient, through='IngredientToRecipe',
         verbose_name='Ингридиенты',
-        related_name='recipes_in'
     )
     pub_date = models.DateTimeField(
         verbose_name='Дата публикации',
@@ -105,46 +103,47 @@ class TagToRecipe(models.Model):
         return f'{self.tag} + {self.recipe[:10]}'
 
 
-class Favorite(models.Model):
-    """ Модель добавление в избраное. """
-    recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE,
-        verbose_name='Рецепт',
-        related_name="in_favorites"
-    )
+class FavoriteShoppingCart(models.Model):
+    """ Связывающая модель списка покупок и избранного. """
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         verbose_name='Пользователь',
-        related_name="favorites"
+
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        verbose_name='Рецепт',
     )
 
     class Meta:
-        auto_created = True
-        verbose_name = 'Избранные рецепты'
+        abstract = True
+
+    def __str__(self):
+        return f'{self.user} :: {self.recipe}'
+
+
+class Favorite(FavoriteShoppingCart):
+    """ Модель добавление в избраное. """
+
+    class Meta(FavoriteShoppingCart):
+        default_related_name = 'favorites'
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранное'
 
         def __str__(self):
             return (f' рецепт {Favorite.recipe}'
                     f'в избранном пользователя {Favorite.user}')
 
 
-class ShopList(models.Model):
+class ShopList(FavoriteShoppingCart):
     """Модель списка покупок."""
-    recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE,
-        verbose_name='Рецепт',
-        related_name="in_shop"
-    )
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        verbose_name='Пользователь',
-        related_name="shop"
-    )
 
-    class Meta:
-        auto_created = True
-        verbose_name = 'Корзина покупок'
+    class Meta(FavoriteShoppingCart):
+        default_related_name = 'shopping_list'
+        verbose_name = 'Корзина'
+        verbose_name_plural = 'Корзина'
 
     def __str__(self):
         return (f' рецепт {ShopList.recipe}'
@@ -153,11 +152,12 @@ class ShopList(models.Model):
 
 class IngredientToRecipe(models.Model):
     """Доп. таблица для связи ингридиентов и рецептов."""
-    ingredients = models.ForeignKey(
+    ingredient = models.ForeignKey(
         Ingredient, on_delete=models.CASCADE, verbose_name='ингридиент',
     )
     recipe = models.ForeignKey(
         Recipe, on_delete=models.CASCADE, verbose_name='рецепт',
+        related_name='ingredienttorecipe'
     )
 
     amount = models.PositiveIntegerField(
