@@ -61,18 +61,17 @@ class Recipe(models.Model):
     )
     image = models.ImageField('Изображение', upload_to='recipes/image/')
     author = models.ForeignKey(
-        to=User, on_delete=models.CASCADE, verbose_name='автор',
+        User, on_delete=models.CASCADE, verbose_name='автор',
         related_name='recipes'
     )
     tags = models.ManyToManyField(
         Tag, through='TagToRecipe',
-        verbose_name=('Теги'), related_name='recipes_tags'
+        verbose_name=('Теги')
     )
 
     ingredients = models.ManyToManyField(
         Ingredient, through='IngredientToRecipe',
         verbose_name='Ингридиенты',
-        related_name='recipes_ingre'
     )
     pub_date = models.DateTimeField(
         verbose_name='Дата публикации',
@@ -132,13 +131,13 @@ class Favorite(models.Model):
     recipe = models.ForeignKey(
         Recipe, on_delete=models.CASCADE,
         verbose_name='Рецепт',
-        related_name="in_favorite"
+        related_name="in_favorites"
     )
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         verbose_name='Пользователь',
-        related_name="favorite"
+        related_name="favorites"
     )
 
     class Meta:
