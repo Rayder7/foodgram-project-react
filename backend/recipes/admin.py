@@ -14,7 +14,7 @@ class IngredientInline(admin.TabularInline):
 class RecipeAdmin(admin.ModelAdmin):
     """ Админ панель управление рецептами """
     list_display = ('name', 'author', 'cooking_time',
-                    'get_favorites', 'get_ingredients',)
+                    'get_favorites',)
     list_filter = ('name', 'author', 'tags')
     search_fields = ('name', 'author', 'tags')
     inlines = (IngredientInline,)
@@ -22,12 +22,6 @@ class RecipeAdmin(admin.ModelAdmin):
 
     def get_favorites(self, obj):
         return obj.in_favorite.count()
-
-    def get_ingredients(self, obj):
-        return ', '.join([
-            ingredients.name for ingredients
-            in obj.ingredients.all()])
-    get_ingredients.short_description = 'Ингридиенты'
 
 
 class IngredientAdmin(admin.ModelAdmin):
