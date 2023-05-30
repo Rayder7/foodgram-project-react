@@ -152,7 +152,8 @@ class ShopList(models.Model):
 class IngredientToRecipe(models.Model):
     """Доп. таблица для связи ингридиентов и рецептов."""
     ingredient = models.ForeignKey(
-        Ingredient, on_delete=models.CASCADE, verbose_name='ингридиент'
+        Ingredient, on_delete=models.CASCADE, verbose_name='ингридиент',
+        related_name="recipetoingredient",
     )
     recipe = models.ForeignKey(
         Recipe, on_delete=models.CASCADE, verbose_name='рецепт',
@@ -163,7 +164,6 @@ class IngredientToRecipe(models.Model):
     amount = models.PositiveIntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(2600)],
         verbose_name='Количество ингредиента',
-        related_name="recipetoingredient",
         default=1
     )
 
