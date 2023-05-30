@@ -127,23 +127,6 @@ class IngredientToRecipe(models.Model):
         return f'{self.ingredient[:10]} + {self.recipe[:10]}'
 
 
-class FavoriteShopCart(models.Model):
-    """Модель избранных рецептов и корзины покупок."""
-    recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE,
-        verbose_name='Рецепт',
-        related_name="%(app_label)s_%(class)s_related"
-    )
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        verbose_name='Пользователь'
-    )
-
-    class Meta:
-        abstract = True
-
-
 class Favorite(models.Model):
     """ Модель добавление в избраное. """
     recipe = models.ForeignKey(
