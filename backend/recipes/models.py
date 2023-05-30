@@ -71,7 +71,8 @@ class Recipe(models.Model):
 
     ingredients = models.ManyToManyField(
         Ingredient, through='IngredientToRecipe',
-        verbose_name='Ингридиенты'
+        verbose_name='Ингридиенты',
+        related_name='recipes_ingre'
     )
     pub_date = models.DateTimeField(
         verbose_name='Дата публикации',
@@ -145,6 +146,11 @@ class FavoriteShopCart(models.Model):
 
 class Favorite(FavoriteShopCart):
     """ Модель добавление в избраное. """
+    recipe = models.ForeignKey(
+        Recipe, on_delete=models.CASCADE,
+        verbose_name='Рецепт',
+        related_name="favorites"
+    )
 
     class Meta:
         verbose_name = 'Избранные рецепты'
