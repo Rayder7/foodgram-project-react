@@ -20,8 +20,8 @@ class RecipeAdmin(admin.ModelAdmin):
     inlines = (IngredientInline,)
     empty_value_display = '-пусто-'
 
-    def in_favorite(self, obj):
-        return obj.in_favorite.count()
+    def in_favorite(self, obj: Recipe):
+        return obj.in_favorites.count()
 
 
 class IngredientAdmin(admin.ModelAdmin):
