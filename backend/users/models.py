@@ -24,11 +24,11 @@ class Follow(models.Model):
     """Модель подписки."""
     username = models.ForeignKey(
         User, on_delete=models.CASCADE,
-        related_name='Подписчик',
+        related_name='follower',
         default=User)
     author = models.ForeignKey(
         User, on_delete=models.CASCADE,
-        related_name='Автор',
+        related_name='following',
         default=User)
 
     class Meta:
