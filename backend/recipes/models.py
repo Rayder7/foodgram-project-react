@@ -155,12 +155,9 @@ class IngredientToRecipe(models.Model):
     """Доп. таблица для связи ингридиентов и рецептов."""
     ingredients = models.ForeignKey(
         Ingredient, on_delete=models.CASCADE, verbose_name='ингридиент',
-        related_name='recipe'
     )
     recipe = models.ForeignKey(
         Recipe, on_delete=models.CASCADE, verbose_name='рецепт',
-        related_name='ingredient'
-
     )
 
     amount = models.PositiveIntegerField(
