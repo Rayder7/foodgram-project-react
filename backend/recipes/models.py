@@ -130,7 +130,8 @@ class FavoriteShopCart(models.Model):
     """Модель избранных рецептов и корзины покупок."""
     recipe = models.ForeignKey(
         Recipe, on_delete=models.CASCADE,
-        verbose_name='Рецепт'
+        verbose_name='Рецепт',
+        related_name="%(app_label)s_%(class)s_related"
     )
     user = models.ForeignKey(
         User,
@@ -146,7 +147,6 @@ class Favorite(FavoriteShopCart):
     """ Модель добавление в избраное. """
 
     class Meta:
-        related_name = 'favorites'
         verbose_name = 'Избранные рецепты'
 
         def __str__(self):
@@ -158,7 +158,6 @@ class ShopList(FavoriteShopCart):
     """Модель списка покупок."""
 
     class Meta:
-        related_name = 'shopping_list'
         verbose_name = 'Корзина покупок'
 
     def __str__(self):
