@@ -127,7 +127,7 @@ class FavoriteShoppingCart(models.Model):
 class Favorite(FavoriteShoppingCart):
     """ Модель добавление в избраное. """
 
-    class Meta(FavoriteShoppingCart):
+    class Meta:
         default_related_name = 'favorites'
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранное'
@@ -140,7 +140,7 @@ class Favorite(FavoriteShoppingCart):
 class ShopList(FavoriteShoppingCart):
     """Модель списка покупок."""
 
-    class Meta(FavoriteShoppingCart):
+    class Meta:
         default_related_name = 'shopping_list'
         verbose_name = 'Корзина'
         verbose_name_plural = 'Корзина'
