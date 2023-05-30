@@ -73,7 +73,7 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(
         Ingredient, through='IngredientToRecipe',
         verbose_name='Ингридиенты',
-        related_name='recipes'
+        related_name='recipes_in'
     )
     pub_date = models.DateTimeField(
         verbose_name='Дата публикации',
@@ -110,13 +110,13 @@ class Favorite(models.Model):
     recipe = models.ForeignKey(
         Recipe, on_delete=models.CASCADE,
         verbose_name='Рецепт',
-        related_name="in_favorite"
+        related_name="in_favorites"
     )
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         verbose_name='Пользователь',
-        related_name="favorite"
+        related_name="favorites"
     )
 
     class Meta:
@@ -133,13 +133,13 @@ class ShopList(models.Model):
     recipe = models.ForeignKey(
         Recipe, on_delete=models.CASCADE,
         verbose_name='Рецепт',
-        related_name="shop_recipe"
+        related_name="in_shop"
     )
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         verbose_name='Пользователь',
-        related_name="shop_user"
+        related_name="shop"
     )
 
     class Meta:
@@ -155,11 +155,11 @@ class IngredientToRecipe(models.Model):
     """Доп. таблица для связи ингридиентов и рецептов."""
     ingredient = models.ForeignKey(
         Ingredient, on_delete=models.CASCADE, verbose_name='ингридиент',
-        related_name='ingredienttorecipe'
+        related_name='recipe'
     )
     recipe = models.ForeignKey(
         Recipe, on_delete=models.CASCADE, verbose_name='рецепт',
-        related_name='ingredienttorecipe'
+        related_name='ingredient'
 
     )
 
