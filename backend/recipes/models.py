@@ -142,6 +142,7 @@ class Favorite(models.Model):
     )
 
     class Meta:
+        auto_created = True
         verbose_name = 'Избранные рецепты'
 
         def __str__(self):
@@ -164,6 +165,7 @@ class ShopList(models.Model):
     )
 
     class Meta:
+        auto_created = True
         verbose_name = 'Корзина покупок'
 
     def __str__(self):
