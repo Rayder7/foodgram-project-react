@@ -76,7 +76,7 @@ class Recipe(models.Model):
     )
     pub_date = models.DateTimeField(
         verbose_name='Дата публикации',
-        auto_now_add=True,
+        auto_now_add=True
     )
 
     class Meta:
@@ -148,6 +148,7 @@ class Favorite(FavoriteShopCart):
     """ Модель добавление в избраное. """
 
     class Meta:
+        default_related_name = 'favorites'
         verbose_name = 'Избранные рецепты'
 
         def __str__(self):
@@ -159,6 +160,7 @@ class ShopList(FavoriteShopCart):
     """Модель списка покупок."""
 
     class Meta:
+        default_related_name = 'shopping_list'
         verbose_name = 'Корзина покупок'
 
     def __str__(self):
