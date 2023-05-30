@@ -146,11 +146,6 @@ class FavoriteShopCart(models.Model):
 
 class Favorite(FavoriteShopCart):
     """ Модель добавление в избраное. """
-    recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE,
-        verbose_name='Рецепт',
-        related_name="favorites"
-    )
 
     class Meta:
         verbose_name = 'Избранные рецепты'
