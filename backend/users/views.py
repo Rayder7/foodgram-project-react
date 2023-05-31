@@ -18,7 +18,7 @@ class UserViewSet(UserViewSet):
     @action(
         detail=True,
         methods=['POST', 'DELETE'],
-        permission_classes=[IsAuthenticated],
+        permission_classes=(IsAuthenticated,)
     )
     def subscribe(self, request, id):
         user = request.user
