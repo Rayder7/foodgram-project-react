@@ -65,7 +65,7 @@ class Recipe(models.Model):
         related_name='recipes'
     )
     tags = models.ManyToManyField(
-        Tag, through='TagToRecipe',
+        Tag, 
         verbose_name=('Теги'),
         related_name='recipes'
     )
@@ -86,23 +86,6 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.name[:10]
-
-
-class TagToRecipe(models.Model):
-    """Доп. таблица для связи тегов и рецептов."""
-    tag = models.ForeignKey(
-        Tag, on_delete=models.CASCADE, verbose_name='тег',
-    )
-    recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE, verbose_name='рецепт',
-    )
-
-    class Meta:
-        verbose_name = 'тег'
-        verbose_name_plural = 'Теги'
-
-    def __str__(self):
-        return f'{self.tag} + {self.recipe[:10]}'
 
 
 class FavoriteShoppingCart(models.Model):
