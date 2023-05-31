@@ -50,5 +50,4 @@ volumes:
   static_value:
   media_value:
   db_data:
-  result_build:
  
