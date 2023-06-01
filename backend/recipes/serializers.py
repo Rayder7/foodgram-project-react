@@ -85,7 +85,15 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = (
             'id', 'tags', 'author', 'ingredients',
-            'name', 'image', 'text', 'cooking_time',)
+            'name', 'image', 'text', 'cooking_time')
+
+    def validate_name_recipe(self, data):
+        name = data['name']
+        if name.filter(name=data['name']).exists():
+            raise serializers.ValidationError(
+                'Такой рецепт уже есть'
+            )
+        return name
 
     def validate_tags(self, tags):
         tags_list = []
@@ -150,12 +158,11 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, instance, validated_data):
-        if 'ingredients' in validated_data:
-            ingredients = validated_data.pop('ingredients')
-            instance.ingredients.clear()
-            self.create_ingredients(instance, ingredients,)
-        if 'tags' in validated_data:
-            instance.tags.set(validated_data.pop('tags'))
+        instance.tags.clear()
+        IngredientToRecipe.objects.filter(recipe=instance).delete()
+        instance.tags.set(validated_data.pop('tags'))
+        ingredients = validated_data.pop('ingredients')
+        self.create_ingredients(instance, ingredients)
         return super().update(instance, validated_data)
 
     def to_representation(self, instance):
