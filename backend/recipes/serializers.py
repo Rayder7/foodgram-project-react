@@ -107,6 +107,9 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         if cooking_time < 1:
             raise serializers.ValidationError(
                 'Время готовки должно быть не меньше одной минуты')
+        if cooking_time > 2880:
+            raise serializers.ValidationError(
+                'Время готовки должно быть не больше 2 суток')
         return cooking_time
 
     def validate_ingredients(self, ingredients):
@@ -150,16 +153,9 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         tags = validated_data.pop('tags')
         if tags is not None:
             instance.tags.set(tags)
-        ingredients = validated_data.pop('ingredients', None)
-        if ingredients is not None:
-            instance.ingredients.clear()
-            for ingedient in ingredients:
-                amount = ingedient['amount']
-            IngredientToRecipe.objects.update_or_create(
-                recipe=instance,
-                ingedient=ingedient.get('id'),
-                defaults={'amount': amount}
-            )
+        IngredientToRecipe.objects.filter(recipe=instance).delete()
+        ingredients = validated_data.pop('ingredients')
+        self.create_ingredients(instance, ingredients)
         return super().update(instance, validated_data)
 
     def to_representation(self, instance):
