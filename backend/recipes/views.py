@@ -3,7 +3,7 @@ from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from recipes.models import (Favorite, Ingredient, IngredientToRecipe, Recipe,
-                            Tag)
+                            ShopList, Tag)
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import (IsAuthenticated,
@@ -75,7 +75,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=('POST',),
-        permission_classes=[IsAuthenticated])
+        permission_classes=(IsAuthenticated,))
     def shopping_cart(self, request, pk):
         context = {'request': request}
         recipe = get_object_or_404(Recipe, id=pk)
@@ -83,7 +83,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             'user': request.user.id,
             'recipe': recipe.id
         }
-        serializer = FavoriteSerializer(data=data, context=context)
+        serializer = ShopListSerializer(data=data, context=context)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -91,7 +91,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @shopping_cart.mapping.delete
     def destroy_shopping_cart(self, request, pk):
         get_object_or_404(
-            ShopListSerializer,
+            ShopList,
             user=request.user.id,
             recipe=get_object_or_404(Recipe, id=pk)
         ).delete()
