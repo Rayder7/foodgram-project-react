@@ -21,7 +21,7 @@ class UserSerializer(UserSerializer):
         request = self.context.get('request')
         if self.context.get('request').user.is_anonymous:
             return False
-        return obj.following.filter(user=request.user).exists()
+        return obj.following.filter(username=request.user).exists()
 
 
 class UserCreateSerializer(UserCreateSerializer):
