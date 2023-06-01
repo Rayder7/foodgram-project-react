@@ -69,6 +69,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
 class CreateRecipeSerializer(serializers.ModelSerializer):
     """ Сериализатор для создания рецепта """
+    name = serializers.CharField()
     ingredients = IngredientRecipeSerializer(
         many=True,
     )
@@ -87,9 +88,9 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
             'id', 'tags', 'author', 'ingredients',
             'name', 'image', 'text', 'cooking_time')
 
-    def validate_name_recipe(self, data):
-        name = data['name']
-        if name.filter(name=data['name']).exists():
+    def validate_name_recipe(self, name):
+        name = name['name']
+        if name.filter(name=name['name']).exists():
             raise serializers.ValidationError(
                 'Такой рецепт уже есть'
             )
