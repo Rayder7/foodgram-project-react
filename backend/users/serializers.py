@@ -37,7 +37,7 @@ class UserCreateSerializer(UserCreateSerializer):
 class SubscribeListSerializer(UserSerializer):
     """ Сериализатор для получения подписок """
     recipes_count = SerializerMethodField()
-    recipes = RecipeShortSerializer(many=True, read_only=True)
+    recipes = SerializerMethodField()
 
     class Meta:
         model = User
