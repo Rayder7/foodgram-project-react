@@ -51,7 +51,8 @@ class SubscribeListSerializer(UserSerializer):
             'recipes',
             'recipes_count',
         )
-        read_only_fields = ('__all__',)
+        read_only_fields = ('email', 'username',
+                            'first_name', 'last_name')
 
     def validate(self, data):
         author_id = self.context.get(
