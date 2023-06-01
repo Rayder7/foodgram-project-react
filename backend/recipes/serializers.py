@@ -94,10 +94,10 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     'Указанного тега не существует')
         for tag in tags:
-            if tag['id'] in tags_list:
+            if tag in tags_list:
                 raise serializers.ValidationError(
                     'Теги должны быть уникальны')
-            tags_list.append(tag['id'])
+            tags_list.append(tag)
             if int(tag.get('amount')) < 1:
                 raise serializers.ValidationError(
                     'Отсуствуют теги')
