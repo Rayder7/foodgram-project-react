@@ -220,7 +220,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
     def validate_ingredients(self, data):
         if not data:
             raise serializers.ValidationError(
-                'Необходимо выбрать ингредиенты!'
+                'Отсутствуют ингридиенты!'
             )
         ingredients = self.initial_data.get('ingredients')
         ingredients_list = []
@@ -231,6 +231,9 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
                     'Есть одинаковые ингредиенты!'
                 )
             ingredients_list.append(ingredient_id)
+            if int(ingredient.get('amount')) < 1:
+                raise serializers.ValidationError(
+                    'Количество ингредиента больше 0')
 
         return data
 
