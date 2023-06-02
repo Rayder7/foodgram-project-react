@@ -117,20 +117,18 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
                 'Время готовки должно быть не больше 2 суток')
         return cooking_time
 
-    def validate_ingredients(self, ingredients):
+    def validate_ingredients(self, data):
+        ingredients = self.initial_data.get('ingredients')
         ingredients_list = []
-        if len(ingredients) < 1:
-            raise serializers.ValidationError(
-                'Отсутствуют ингридиенты')
         for ingredient in ingredients:
-            if ingredient in ingredients_list:
+            ingredient_id = ingredient['id']
+            if ingredient_id in ingredients_list:
                 raise serializers.ValidationError(
-                    'Ингридиенты должны быть уникальны')
-            ingredients_list.append(ingredient)
-            if int(ingredient.get('amount')) < 1:
-                raise serializers.ValidationError(
-                    'Количество ингредиента больше 0')
-        return ingredients
+                    'Есть одинаковые ингредиенты!'
+                )
+            ingredients_list.append(ingredient_id)
+
+        return data
 
     def create_ingredients(self, recipe, ingredients):
         ingredient_liist = []
