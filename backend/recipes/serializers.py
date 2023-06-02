@@ -74,7 +74,6 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
 class CreateRecipeSerializer(serializers.ModelSerializer):
     """ Сериализатор для создания рецепта """
-    name = serializers.CharField()
     ingredients = IngredientRecipeSerializer(
         many=True,
     )
@@ -92,14 +91,6 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'tags', 'author', 'ingredients',
             'name', 'image', 'text', 'cooking_time')
-
-    def validate_name_recipe(self, name):
-        name = name['name']
-        if name.filter(name=name['name']).exists():
-            raise serializers.ValidationError(
-                'Такой рецепт уже есть'
-            )
-        return name
 
     def validate_tags(self, tags):
         tags_list = []
@@ -143,16 +134,12 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def create_ingredients(recipe, ingredients):
-        ingredient_liist = []
-        for ingredient_data in ingredients:
-            ingredient_liist.append(
-                IngredientToRecipe(
-                    ingredient=ingredient_data.pop('id'),
-                    amount=ingredient_data.pop('amount'),
-                    recipe=recipe,
-                )
+        for ingredient in ingredients:
+            IngredientToRecipe.objects.create(
+                ingredient_id=ingredient['ingredient'],
+                amount=ingredient['amount'],
+                recipe=recipe,
             )
-        IngredientToRecipe.objects.bulk_create(ingredient_liist)
 
     def create(self, validated_data):
         request = self.context.get('request', None)
