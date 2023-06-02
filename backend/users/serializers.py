@@ -1,6 +1,5 @@
 from django.shortcuts import get_object_or_404
-from djoser.serializers import UserCreateSerializer
-from djoser.serializers import UserSerializer as UsSer
+from djoser.serializers import UserCreateSerializer, UserSerializer
 from recipes.serializers import RecipeShortSerializer
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
@@ -10,7 +9,7 @@ from rest_framework.validators import UniqueTogetherValidator
 from .models import User
 
 
-class UserSerializer(UsSer):
+class UserCustomSerializer(UserSerializer):
     """ Сериализатор пользователя """
     is_subscribed = SerializerMethodField(read_only=True)
 
