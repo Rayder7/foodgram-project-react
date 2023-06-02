@@ -1,5 +1,5 @@
-from djoser.serializers import UserCreateSerializer, UserSerializer
 from django.shortcuts import get_object_or_404
+from djoser.serializers import UserCreateSerializer, UserSerializer
 from recipes.serializers import RecipeShortSerializer
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
