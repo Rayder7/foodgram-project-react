@@ -2,7 +2,7 @@ from drf_extra_fields.fields import Base64ImageField
 from recipes.models import (Favorite, Ingredient, IngredientToRecipe, Recipe,
                             ShopList, Tag)
 from rest_framework import serializers
-from users.serializers import UserSerializer
+from users.serializers import UserSerializer as CustomUser
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -42,7 +42,7 @@ class IngredientRecipeSerializer(serializers.ModelSerializer):
 class RecipeReadSerializer(serializers.ModelSerializer):
     """ Сериализатор просмотра рецепта """
     tags = TagSerializer(read_only=False, many=True)
-    author = UserSerializer(read_only=True)
+    author = CustomUser(read_only=True)
     ingredients = IngredientRecipeSerializer(
         many=True,
         source='ingredienttorecipe')
@@ -83,7 +83,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         error_messages={'does_not_exist': 'Указанного тега не существует'}
     )
     image = Base64ImageField(max_length=None)
-    author = UserSerializer(read_only=True)
+    author = CustomUser(read_only=True)
     cooking_time = serializers.IntegerField()
 
     class Meta:
