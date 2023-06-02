@@ -128,6 +128,10 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         return cooking_time
 
     def validate_ingredients(self, data):
+        if not data:
+            raise serializers.ValidationError(
+                'Необходимо выбрать ингредиенты!'
+            )
         ingredients = self.initial_data.get('ingredients')
         ingredients_list = []
         for ingredient in ingredients:
