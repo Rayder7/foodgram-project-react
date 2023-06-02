@@ -42,7 +42,7 @@ class IngredientRecipeSerializer(serializers.ModelSerializer):
 class RecipeReadSerializer(serializers.ModelSerializer):
     """ Сериализатор просмотра рецепта """
     tags = TagSerializer(read_only=False, many=True)
-    author = serializers.SerializerMethodField()
+    author = UserSerializer(read_only=True)
     ingredients = IngredientRecipeSerializer(
         many=True,
         source='ingredienttorecipe')

@@ -4,6 +4,7 @@ from recipes.serializers import RecipeShortSerializer
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import SerializerMethodField
+from rest_framework.validators import UniqueTogetherValidator
 
 from .models import User
 
@@ -16,6 +17,12 @@ class UserSerializer(UserSerializer):
         model = User
         fields = ('username', 'email', 'id', 'first_name',
                   'last_name', 'is_subscribed')
+        validators = [
+            UniqueTogetherValidator(
+                queryset=User.objects.all(),
+                fields=('username', 'email')
+            )
+        ]
 
     def get_is_subscribed(self, obj):
         request = self.context.get('request')
