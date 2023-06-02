@@ -132,7 +132,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
                     'Количество ингредиента больше 0')
         return ingredients
 
-    def create_ingredients(recipe, ingredients):
+    def create_ingredients(self, recipe, ingredients):
         obj = []
         for ingredient, amount in ingredients.values():
             obj.append(IngredientToRecipe(
