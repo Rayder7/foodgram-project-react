@@ -93,16 +93,10 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
             'name', 'image', 'text', 'cooking_time')
 
     def validate_name(self, name):
-        name_list = []
-        for x in name:
-            if not Recipe.objects.filter(id=Recipe.id).exists():
-                raise serializers.ValidationError(
-                    'Указанного тега не существует')
-        for x in name:
-            if x in name_list:
-                raise serializers.ValidationError(
-                    'Теги должны быть уникальны')
-            name_list.append(x)
+        if name in Recipe.objects.filter(name=name.id):
+            raise serializers.ValidationError(
+                'Такой рецепт уже есть!'
+            )
 
         return name
 
