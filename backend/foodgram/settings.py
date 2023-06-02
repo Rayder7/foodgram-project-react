@@ -128,8 +128,8 @@ DJOSER = {
     'LOGIN_FIELD': 'email',
     'SERIALIZERS': {
         "user_create": "users.serializers.UserCreateSerializer",
-        "user": "users.serializers.UserCustomSerializer",
-        "current_user": "users.serializers.UserCustomSerializer",
+        "user": "users.serializers.UserSerializer",
+        "current_user": "users.serializers.UserSerializer",
     },
     'PERMISSIONS': {
         "user": ["djoser.permissions.CurrentUserOrAdminOrReadOnly"],
