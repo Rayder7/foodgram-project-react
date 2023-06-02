@@ -1,4 +1,3 @@
-from django.db.models import F
 from drf_extra_fields.fields import Base64ImageField
 from recipes.models import (Favorite, Ingredient, IngredientToRecipe, Recipe,
                             ShopList, Tag)
