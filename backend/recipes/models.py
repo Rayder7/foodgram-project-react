@@ -49,7 +49,7 @@ class Ingredient(models.Model):
 
 class Recipe(models.Model):
     """Модель рецепта."""
-    name = models.CharField('Название', max_length=200)
+    name = models.CharField('Название', max_length=200, unique=True,)
     text = models.TextField('Описание')
     cooking_time = models.PositiveSmallIntegerField(
         'Время приготовления',
