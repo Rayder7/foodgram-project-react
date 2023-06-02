@@ -11,6 +11,11 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'color', 'slug')
         model = Tag
 
+    def validate(self, data):
+        for key, value in data.items():
+            data[key] = value.sttrip('#').upper()
+        return data
+
 
 class IngredientSerializer(serializers.ModelSerializer):
     """Серилизатор для модели Ingredient."""
@@ -159,10 +164,12 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, instance, validated_data):
-        instance.tags.clear()
-        IngredientToRecipe.objects.filter(recipe=instance).delete()
-        instance.tags.set(validated_data.pop('tags'))
+        tags = validated_data.pop('tags')
         ingredients = validated_data.pop('ingredients')
+        instance = super().update(instance, validated_data)
+        instance.tags.clear()
+        instance.tags.set(tags)
+        instance.ingredients.clear()
         self.create_ingredients(instance, ingredients)
         return super().update(instance, validated_data)
 

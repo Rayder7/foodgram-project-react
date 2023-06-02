@@ -25,10 +25,12 @@ class Follow(models.Model):
     username = models.ForeignKey(
         User, on_delete=models.CASCADE,
         related_name='follower',
+        verbose_name='Автор'
     )
     author = models.ForeignKey(
         User, on_delete=models.CASCADE,
         related_name='following',
+        verbose_name='Подписчик'
     )
 
     class Meta:
