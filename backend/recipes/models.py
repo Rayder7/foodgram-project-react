@@ -34,6 +34,7 @@ class Ingredient(models.Model):
     measurement_unit = models.CharField('Еденица измерения', max_length=30)
 
     class Meta:
+        ordering = ('-id',)
         verbose_name = 'Ингридиент'
         verbose_name_plural = 'Ингридиенты'
         constraints = [
