@@ -92,12 +92,13 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
             'id', 'tags', 'author', 'ingredients',
             'name', 'image', 'text', 'cooking_time')
 
-    @staticmethod
-    def validate_name(name):
-        if name in Recipe.objects.filter(name=name).all():
-            raise serializers.ValidationError(
-                'Такой рецепт уже есть!'
-            )
+    def validate_name(self, name):
+        name_list = []
+        for n in name:
+            if n in name_list:
+                raise serializers.ValidationError(
+                    'Имя рецепта должно быть уникальным')
+            name_list.append(n)
 
         return name
 
