@@ -1,4 +1,4 @@
-import djoser.serializers
+from djoser.serializers import UserCreateSerializer, UserSerializer
 from django.shortcuts import get_object_or_404
 from recipes.serializers import RecipeShortSerializer
 from rest_framework import status
@@ -9,7 +9,7 @@ from rest_framework.validators import UniqueTogetherValidator
 from .models import User
 
 
-class UserSerializer(djoser.serializers.UserSerializer):
+class UserSerializer(UserSerializer):
     """ Сериализатор пользователя """
     is_subscribed = SerializerMethodField(read_only=True)
 
@@ -31,7 +31,7 @@ class UserSerializer(djoser.serializers.UserSerializer):
         return obj.following.filter(username=request.user).exists()
 
 
-class UserCreateSerializer(djoser.serializers.UserCreateSerializer):
+class UserCreateSerializer(UserCreateSerializer):
     """ Сериализатор создания пользователя """
 
     class Meta:

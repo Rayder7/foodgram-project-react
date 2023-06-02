@@ -7,12 +7,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Follow, User
-from .serializers import CustomUserSerializer, SubscribeListSerializer
+from .serializers import UserSerializer, SubscribeListSerializer
 
 
 class UserViewSet(UserViewSet):
     queryset = User.objects.all()
-    serializer_class = CustomUserSerializer
+    serializer_class = UserSerializer
     pagination_class = CustomPagination
 
     @action(
