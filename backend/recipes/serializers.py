@@ -93,7 +93,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
             'name', 'image', 'text', 'cooking_time')
 
     def validate_name(self, name):
-        if name in Recipe.objects.filter(name=name.id):
+        if name in Recipe.objects.filter(name=name):
             raise serializers.ValidationError(
                 'Такой рецепт уже есть!'
             )
