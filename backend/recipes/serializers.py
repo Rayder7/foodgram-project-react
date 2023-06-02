@@ -92,6 +92,20 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
             'id', 'tags', 'author', 'ingredients',
             'name', 'image', 'text', 'cooking_time')
 
+    def validate_name(self, name):
+        name_list = []
+        for x in name:
+            if not Recipe.objects.filter(id=Recipe.id).exists():
+                raise serializers.ValidationError(
+                    'Указанного тега не существует')
+        for x in name:
+            if x in name_list:
+                raise serializers.ValidationError(
+                    'Теги должны быть уникальны')
+            name_list.append(x)
+
+        return name
+
     def validate_tags(self, tags):
         tags_list = []
         for tag in tags:
