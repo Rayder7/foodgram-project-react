@@ -92,7 +92,8 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
             'id', 'tags', 'author', 'ingredients',
             'name', 'image', 'text', 'cooking_time')
 
-    def validate_name(self, name):
+    @staticmethod
+    def validate_name(name):
         if name in Recipe.objects.filter(name=name).all():
             raise serializers.ValidationError(
                 'Такой рецепт уже есть!'
@@ -165,7 +166,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         instance.tags.set(validated_data.pop('tags'))
         ingredients = validated_data.pop('ingredients')
         self.create_ingredients(instance, ingredients)
-        return super().update(instance, validated_data)
+        return super().update(instance, **validated_data)
 
     def to_representation(self, instance):
         return RecipeReadSerializer(instance, context={
