@@ -56,7 +56,6 @@ class SubscribeListSerializer(djoser.serializers.UserSerializer):
             'username',
             'first_name',
             'last_name',
-            'is_subscribed',
             'recipes',
             'recipes_count',
         )
