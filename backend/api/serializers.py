@@ -117,7 +117,7 @@ class IngredientSerializer(serializers.ModelSerializer):
 class IngredientRecipeSerializer(serializers.ModelSerializer):
     """ Сериализатор связи ингридиентов и рецепта """
     id = serializers.PrimaryKeyRelatedField(
-        queryset=Ingredient.objects.all()
+        source='ingredient.id'
     )
     name = serializers.ReadOnlyField(source='ingredient.name')
     measurement_unit = serializers.ReadOnlyField(
@@ -127,6 +127,17 @@ class IngredientRecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = IngredientToRecipe
         fields = ('id', 'name', 'measurement_unit', 'amount',)
+
+
+class IngredientRecipeForCreateSerializer(serializers.ModelSerializer):
+    """ Сериализатор связи ингридиентов и рецепта для записи."""
+    id = serializers.PrimaryKeyRelatedField(
+        queryset=Ingredient.objects.all()
+    )
+
+    class Meta:
+        model = IngredientToRecipe
+        fields = ('id', 'amount',)
 
 
 class RecipeReadSerializer(serializers.ModelSerializer):
@@ -164,7 +175,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
 class CreateRecipeSerializer(serializers.ModelSerializer):
     """ Сериализатор для создания рецепта """
-    ingredients = IngredientRecipeSerializer(
+    ingredients = IngredientRecipeForCreateSerializer(
         many=True,
     )
     tags = serializers.PrimaryKeyRelatedField(
@@ -243,7 +254,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         for ingredient_data in ingredients:
             ingredient_liist.append(
                 IngredientToRecipe(
-                    ingredient=ingredient_data.get('id'),
+                    ingredient=ingredient_data['id'],
                     amount=ingredient_data['amount'],
                     recipe=recipe,
                 )
