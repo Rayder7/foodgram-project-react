@@ -116,7 +116,7 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 class IngredientRecipeSerializer(serializers.ModelSerializer):
     """ Сериализатор связи ингридиентов и рецепта """
-    id = serializers.PrimaryKeyRelatedField(
+    id = serializers.ReadOnlyField(
         source='ingredient.id'
     )
     name = serializers.ReadOnlyField(source='ingredient.name')
