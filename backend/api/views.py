@@ -55,7 +55,7 @@ class UserViewSet(UserViewSet):
 
         if request.method == 'DELETE':
             get_object_or_404(
-                Follow, user=user, author=author
+                Follow, username=user, author=author
             ).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
