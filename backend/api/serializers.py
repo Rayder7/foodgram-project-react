@@ -117,6 +117,7 @@ class IngredientSerializer(serializers.ModelSerializer):
 class IngredientRecipeSerializer(serializers.ModelSerializer):
     """ Сериализатор связи ингридиентов и рецепта """
     id = serializers.PrimaryKeyRelatedField(
+        source='ingredient',
         queryset=Ingredient.objects.all()
     )
     name = serializers.ReadOnlyField(source='ingredient.name')
@@ -241,12 +242,10 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
     def create_ingredients(recipe, ingredients):
         ingredient_liist = []
         for ingredient_data in ingredients:
-            ingredient_id = ingredient_data['ingredients']
-            amount = ingredient_data['amount']
             ingredient_liist.append(
                 IngredientToRecipe(
-                    ingredient=ingredient_id,
-                    amount=amount,
+                    ingredient=ingredient_data.get('id'),
+                    amount=ingredient_data['amount'],
                     recipe=recipe,
                 )
             )
