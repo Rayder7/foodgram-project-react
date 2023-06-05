@@ -101,7 +101,7 @@ class TagSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         for key, value in data.items():
-            data[key] = value.sttrip('#').upper()
+            data[key] = value.sttrip('#').lower()
         return data
 
 

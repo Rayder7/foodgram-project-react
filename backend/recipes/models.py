@@ -12,7 +12,7 @@ class Tag(models.Model):
         'Цвет', max_length=7, default="#ffffff", unique=True, format='hex',
         validators=[
             RegexValidator(
-                regex="^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$",
+                regex="^#([a-f0-9]{6}|[a-f0-9]{3})$",
                 message='Проверьте вводимый формат',
             )
         ],
