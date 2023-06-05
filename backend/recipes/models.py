@@ -2,7 +2,6 @@ from colorfield.fields import ColorField
 from django.core.validators import (MaxValueValidator, MinValueValidator,
                                     RegexValidator)
 from django.db import models
-
 from users.models import User
 
 
@@ -51,7 +50,7 @@ class Ingredient(models.Model):
 
 class Recipe(models.Model):
     """Модель рецепта."""
-    name = models.CharField('Название', max_length=200, unique=True,)
+    name = models.CharField('Название', max_length=200)
     text = models.TextField('Описание')
     cooking_time = models.PositiveSmallIntegerField(
         'Время приготовления',
@@ -86,6 +85,12 @@ class Recipe(models.Model):
         ordering = ('-pub_date',)
         verbose_name = ('Рецепт')
         verbose_name_plural = ('Рецепты')
+        constraints = [
+            models.UniqueConstraint(
+                fields=['text', 'author'],
+                name='unique_text_author'
+            )
+        ]
 
     def __str__(self):
         return self.name[:10]

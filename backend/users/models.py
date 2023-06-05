@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models import F, Q
 
 
 class User(AbstractUser):
@@ -44,6 +45,10 @@ class Follow(models.Model):
                 ),
                 name="unique_follow",
             ),
+            models.CheckConstraint(
+                check=~Q(user=F('author')),
+                name='no_self_follow'
+            )
         )
 
     def __str__(self):

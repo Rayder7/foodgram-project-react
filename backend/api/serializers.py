@@ -1,13 +1,12 @@
 import djoser.serializers
 from django.shortcuts import get_object_or_404
 from drf_extra_fields.fields import Base64ImageField
+from recipes.models import (Favorite, Ingredient, IngredientToRecipe, Recipe,
+                            ShopList, Tag)
 from rest_framework import serializers, status
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import SerializerMethodField
 from rest_framework.validators import UniqueTogetherValidator
-
-from recipes.models import (Favorite, Ingredient, IngredientToRecipe, Recipe,
-                            ShopList, Tag)
 from users.models import User
 
 
@@ -104,6 +103,14 @@ class TagSerializer(serializers.ModelSerializer):
         for key, value in data.items():
             data[key] = value.sttrip('#').upper()
         return data
+
+    def validate_color(self, color):
+        color_list = []
+        for col in color:
+            if col in color_list:
+                raise serializers.ValidationError(
+                    'Теги должны быть уникальны')
+            color_list.append(col).upper()
 
 
 class IngredientSerializer(serializers.ModelSerializer):
