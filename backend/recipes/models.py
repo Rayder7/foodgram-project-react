@@ -110,7 +110,7 @@ class TagToRecipe(models.Model):
         verbose_name_plural = 'Теги'
 
     def __str__(self):
-        return f'{self.tag} + {self.recipe[:10]}'
+        return f'{self.tag} + {self.recipe}'
 
 
 class FavoriteShoppingCart(models.Model):

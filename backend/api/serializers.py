@@ -65,7 +65,7 @@ class SubscribeListSerializer(djoser.serializers.UserSerializer):
         author_id = self.context.get(
             'request').parser_context.get('kwargs').get('id')
         author = get_object_or_404(User, id=author_id)
-        user = self.context.get('request').user
+        user = self.context.get('request').username
         if user.follower.filter(author=author_id).exists():
             raise ValidationError(
                 detail='Подписка уже существует',
