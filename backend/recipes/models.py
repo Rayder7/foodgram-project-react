@@ -27,6 +27,14 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
+    def clean(self) -> None:
+        if len(self.color) == 3:
+            return (f'#{self.color[0] * 2}{self.color[1] * 2}'
+                    f'{self.color[2] * 2}'.upper())
+        collor = '#' + self.color.upper()
+        self.color = collor
+        return super().clean()
+
 
 class Ingredient(models.Model):
     """Модель ингридиентов."""
