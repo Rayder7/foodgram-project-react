@@ -104,14 +104,6 @@ class TagSerializer(serializers.ModelSerializer):
             data[key] = value.sttrip('#').upper()
         return data
 
-    def validate_color(self, color):
-        color_list = Tag.objects.all()
-        for i in color_list:
-            i = i.upper()
-        if color.upper() in color_list:
-            raise serializers.ValidationError(
-                'Теги должны быть уникальны')
-
 
 class IngredientSerializer(serializers.ModelSerializer):
     """Серилизатор для модели Ingredient."""
