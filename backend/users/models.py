@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import F, Q
@@ -53,3 +54,7 @@ class Follow(models.Model):
 
     def __str__(self):
         return f'{self.username} follows {self.author}'
+
+    def clean(self):
+        if self.username == self.author:
+            raise ValidationError('На себя подписываться нельзя!')
